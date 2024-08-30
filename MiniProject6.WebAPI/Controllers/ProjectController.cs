@@ -15,14 +15,14 @@ namespace MiniProject6.WebAPI.Controllers
         {
             _projectRepository = projectRepository;
         }
-        [Authorize(Roles = "Administrator, Department Manager, Employee")]
+        [Authorize(Roles = "Administrator, Department Manager, HR Manager, Employee")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Project>>> GetAllProject()
         {
             var project = await _projectRepository.GetAllProject();
             return Ok(project);
         }
-        [Authorize(Roles = "Administrator, Department Manager, Employee")]
+        [Authorize(Roles = "Administrator, Department Manager, HR Manager, Employee")]
         [HttpGet("{projNo}")]
         public async Task<ActionResult<Project>> GetProjectById(int projNo)
         {

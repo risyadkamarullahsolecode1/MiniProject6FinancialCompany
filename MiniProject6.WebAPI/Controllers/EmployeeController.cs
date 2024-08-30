@@ -165,5 +165,14 @@ namespace MiniProject6.WebAPI.Controllers
             if (result.Status == "Error") return BadRequest(result.Message);
             return Ok(result);
         }
+
+        // get all employee below supervisor
+        [Authorize(Roles = "Employee Supervisor")]
+        [HttpGet("get-employee-supervisor")]
+        public async Task<IActionResult> GetEmployeeUnderSupervisor(int spvEmpNo)
+        {
+            var result = await _employeeService.GetEmployeesUnderSupervisorAsync(spvEmpNo);
+            return Ok(result);
+        }
     }
 }

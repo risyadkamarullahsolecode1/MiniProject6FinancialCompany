@@ -14,14 +14,14 @@ namespace MiniProject6.WebAPI.Controllers
         {
             _worksonRepository = worksonRepository;
         }
-        [Authorize(Roles = "Administrator, Department Manager")]
+        [Authorize(Roles = "Administrator, HR Manager, Employee Supervisor, Department Manager")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Workson>>> GetAllWorkson()
         {
             var workson = await _worksonRepository.GetAllWorkson();
             return Ok(workson);
         }
-        [Authorize(Roles = "Administrator, Department Manager")]
+        [Authorize(Roles = "Administrator, HR Manager, Employee Supervisor, Department Manager")]
         [HttpGet("{empNo}/{projNo}")]
         public async Task<ActionResult<Workson>> GetProjectById(int empNo, int projNo)
         {
@@ -39,7 +39,7 @@ namespace MiniProject6.WebAPI.Controllers
             var workson = await _worksonRepository.GetWorksonByEmployee(empNo);
             return Ok(workson);
         }
-        [Authorize(Roles = "Administrator, Employee Supervisor")]
+        [Authorize(Roles = "Administrator ")]
         [HttpPost]
         public async Task<ActionResult<Project>> AddDepartment(Workson workson)
         {

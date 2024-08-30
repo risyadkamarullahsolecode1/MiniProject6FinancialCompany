@@ -83,14 +83,28 @@ namespace MiniProject6.Infrastructure.Data.Repository
         }
         public async Task<List<Employee>> GetEmployeesBySupervisorIdAsync(int spvEmpNo)
         {
-            var spv = await _context.Departments
-                .Where(e => e.Spvempno == spvEmpNo)
-                .Select(d => d.Deptno)
+            // Find the department number where the given supervisor is assigned
+            var department = await _context.Departments
+                .Where(d => d.Spvempno == spvEmpNo)
+                .Select(d => new { d.Deptno, d.Spvempno })
                 .FirstOrDefaultAsync();
 
-            return await _context.Employees
-                .Where(e => e.Empno == spv)
+            var manager = await _context.Departments
+                .Where(d => d.Mgrempno == spvEmpNo)
+                .Select(d => new { d.Deptno, d.Mgrempno })  // Include department number and manager number
+                .FirstOrDefaultAsync();
+
+            if (department == null)
+            {
+                throw new KeyNotFoundException($"Department with supervisor No {spvEmpNo} not found.");
+            }
+
+            // Get employees within the department, excluding the supervisor and manager
+            var employees = await _context.Employees
+                .Where(e => e.Deptno == department.Deptno && e.Empno != spvEmpNo)  // Exclude the supervisor themselves
                 .ToListAsync();
+
+            return employees;
         }
     }
 }

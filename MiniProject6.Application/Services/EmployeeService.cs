@@ -186,6 +186,12 @@ namespace MiniProject6.Application.Services
         }
         public async Task<List<EmployeeDto>> GetEmployeesUnderSupervisorAsync(int spvEmpNo)
         {
+            var username = _httpContextAccessor.HttpContext.User.Identity.Name;
+            if (username == null)
+            {
+                throw new UnauthorizedAccessException("User not found");
+            }
+
             var employees = await _departmentRepository.GetEmployeesBySupervisorIdAsync(spvEmpNo);
             return employees.Select(e => new EmployeeDto
             {
