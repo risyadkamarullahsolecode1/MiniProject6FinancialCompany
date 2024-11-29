@@ -17,5 +17,6 @@ namespace MiniProject6.Domain.Interfaces
         Task<Employee> GetManagerByDeptNoAsync(int deptNo);
         Task<Employee> GetSupervisorByDeptNoAsync(int deptNo);
         Task<List<Employee>> GetEmployeesBySupervisorIdAsync(int spvEmpNo);
+        Task<IEnumerable<Employee>> GetEmployee(int deptNo);
     }
 }

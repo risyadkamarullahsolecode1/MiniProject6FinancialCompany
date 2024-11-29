@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MiniProject6.Domain.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +17,7 @@ namespace MiniProject6.Application.Dtos.Account
         public DateTime? RefreshTokenExpiryTime { get; set; }
         public DateTime? ExpiredOn { get; set; }
         public List<string> Roles { get; set; }
+        //tambahan
+        public AppUser? User { get; set; }
     }
 }

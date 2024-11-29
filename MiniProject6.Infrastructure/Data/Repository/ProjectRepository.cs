@@ -49,5 +49,12 @@ namespace MiniProject6.Infrastructure.Data.Repository
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<Project>> GetProjectsByDepartmentAsync(int deptNo)
+        {
+            return await _context.Projects
+                .Where(project => project.Deptno == deptNo)
+                .ToListAsync();
+        }
     }
 }

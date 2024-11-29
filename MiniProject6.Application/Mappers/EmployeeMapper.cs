@@ -14,7 +14,7 @@ namespace MiniProject6.Application.Mappers
         {
             return new EmployeeDto
             {
-                empNo = employee.Empno,
+                EmpNo = employee.Empno,
                 EmployeeName = employee.Fname+" "+employee.Lname,
                 Dob = employee.Dob,
                 Address = employee.Address,

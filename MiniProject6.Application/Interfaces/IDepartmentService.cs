@@ -1,4 +1,5 @@
 ﻿using MiniProject6.Application.Dtos;
+using MiniProject6.Application.Dtos.Project;
 using MiniProject6.Domain.Entities;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,7 @@ namespace MiniProject6.Application.Interfaces
     {
         Task<Employee> AssignEmployeeToDepartment(int empNo, int deptNo);
         Task<EmployeeDetails> GetEmployeesUnderSupervisorAsync(int spvEmpNo);
+        Task<List<ProjectResponseDto>> GetProjectsForDepartmentAsync();
+        Task UpdateProjectAssignmentsAsync(Workson workson);
     }
 }

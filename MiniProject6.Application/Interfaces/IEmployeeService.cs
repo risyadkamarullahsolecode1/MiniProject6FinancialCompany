@@ -15,5 +15,13 @@ namespace MiniProject6.Application.Interfaces
         Task<List<EmployeeDto>> GetAllEmployeesAsync();
         Task<EmployeeDetailMaster> GetEmployeeByIdAsync(int empno);
         Task<List<EmployeeDto>> GetEmployeesUnderSupervisorAsync(int spvEmpNo);
+        Task<object> GetFilteredSortedEmployeesAsync(SearchDto searchDto);
+        Task DeactivateEmployeeAsync(int empNo, string reason);
+        Task UpdateEmployeeAsync(int empNo, UpdateDto updateDto);
+        Task<EmployeeWithDepartmentDto> GetEmployeeWithDepartmentByIdAsync(int empNo);
+        Task AddDependentAsync(int empNo, DependentDto dependentDto);
+        Task AddDependentLoginAsync(DependentDto dependentDto);
+        Task<List<EmployeeDepartmentDto>> GetEmployeesInSameDepartmentAsync();
+        Task<object> GetEmployeeDetails();
     }
 }

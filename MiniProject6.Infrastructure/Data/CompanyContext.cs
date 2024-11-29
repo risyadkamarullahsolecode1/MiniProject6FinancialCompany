@@ -26,8 +26,6 @@ namespace MiniProject6.Infrastructure.Data
             {
                 entity.HasKey(e => e.Deptno).HasName("departments_pkey");
 
-                entity.HasOne(d => d.LocationNavigation).WithMany(p => p.Departments).HasConstraintName("fk_location");
-
                 entity.HasOne(d => d.MgrempnoNavigation).WithMany(p => p.DepartmentMgrempnoNavigations)
                     .OnDelete(DeleteBehavior.SetNull)
                     .HasConstraintName("departments_mgrempno_fkey");
@@ -53,10 +51,6 @@ namespace MiniProject6.Infrastructure.Data
                 entity.HasOne(d => d.DeptnoNavigation).WithMany(p => p.Employees).HasConstraintName("fk_deptno");
             });
 
-            modelBuilder.Entity<Location>(entity =>
-            {
-                entity.HasKey(e => e.Locations).HasName("location_pkey");
-            });
 
             modelBuilder.Entity<Project>(entity =>
             {

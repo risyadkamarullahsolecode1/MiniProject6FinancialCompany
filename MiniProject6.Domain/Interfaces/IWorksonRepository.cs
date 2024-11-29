@@ -14,6 +14,7 @@ namespace MiniProject6.Domain.Interfaces
         Task<Workson> AddWorkson(Workson workson);
         Task<Workson> UpdateWorkson(Workson workson);
         Task<bool> DeleteWorkson(int empNo, int projNo);
-        Task<IEnumerable<Workson>> GetWorksonByEmployee(int empNo);
+        Task<IEnumerable<Workson>> GetWorksonByEmpNo(int empNo);
+        Task<IEnumerable<object>> GetEmployeesByProjectAsync(int projNo);
     }
 }

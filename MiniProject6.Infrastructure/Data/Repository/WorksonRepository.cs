@@ -50,9 +50,29 @@ namespace MiniProject6.Infrastructure.Data.Repository
             await _context.SaveChangesAsync();
             return true;
         }
-        public async Task<IEnumerable<Workson>> GetWorksonByEmployee(int empNo)
+        public async Task<IEnumerable<Workson>> GetWorksonByEmpNo(int empNo)
         {
-            return await _context.Worksons.ToListAsync();
+            return await _context.Worksons.Where(d => d.Empno == empNo).ToListAsync();
+        }
+
+        public async Task<IEnumerable<object>> GetEmployeesByProjectAsync(int projNo)
+        {
+            var employeeProjectDetails = await _context.Worksons
+                .Where(w => w.Projno == projNo)
+                .Include(w => w.EmpnoNavigation)  // Include Employee details
+                .Include(w => w.ProjnoNavigation) // Include Project details
+                .Select(w => new
+                {
+                    EmployeeNo = w.EmpnoNavigation.Empno,
+                    EmployeeName = $"{w.EmpnoNavigation.Fname} {w.EmpnoNavigation.Lname}",
+                    ProjectNo = w.Projno,
+                    ProjectName = w.ProjnoNavigation.Projname,
+                    TotalHours = w.Hoursworked,
+                    DateWorked = w.Dateworked
+                })
+                .ToListAsync();
+
+            return employeeProjectDetails;
         }
     }
 }

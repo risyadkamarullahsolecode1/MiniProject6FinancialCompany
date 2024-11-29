@@ -1,4 +1,5 @@
-﻿using MiniProject6.Application.Dtos.Account;
+﻿using Microsoft.AspNetCore.Http;
+using MiniProject6.Application.Dtos.Account;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,5 +20,6 @@ namespace MiniProject6.Application.Interfaces
         string GenerateRefreshToken();
         Task<ResponseModel> UpdateRoleAsync(string rolename);
         Task<ResponseModel> DeleteAsync(string userName);
+        Task<RefreshTokenResponseDto> RefreshAccessTokenAsync(HttpContext httpContext);
     }
 }

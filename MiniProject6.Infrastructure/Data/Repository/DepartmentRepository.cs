@@ -106,5 +106,13 @@ namespace MiniProject6.Infrastructure.Data.Repository
 
             return employees;
         }
+
+        public async Task<IEnumerable<Employee>> GetEmployee(int deptNo)
+        {
+            var employeeInDept = await _context.Employees
+                .Where(e => e.Deptno == deptNo)
+                .ToListAsync();
+            return employeeInDept;
+        }
     }
 }

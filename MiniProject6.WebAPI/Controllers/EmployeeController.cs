@@ -22,7 +22,7 @@ namespace MiniProject6.WebAPI.Controllers
             _employeeService = employeeService;
         }
         // get employee by id only for employee
-        [Authorize(Roles = "Employee")]
+        //[Authorize(Roles = "Employee ")]
         [HttpGet("employee/{empNo}")]
         public async Task<ActionResult<Employee>> GetEmployeeByIdEmployee(int empNo)
         {
@@ -35,7 +35,7 @@ namespace MiniProject6.WebAPI.Controllers
             return Ok(employee);
         }
         // get employee  only for employee
-        [Authorize(Roles = "Employee")]
+        //[Authorize(Roles = "Employee")]
         [HttpGet]
         public ActionResult<IQueryable<Employee>> GetAllEmployee()
         {
@@ -44,7 +44,7 @@ namespace MiniProject6.WebAPI.Controllers
             return Ok(employeeDto);
         }
         // get employee for role except for employee
-        [Authorize(Roles = "Administrator,HR Manager")]
+        //[Authorize(Roles = "Administrator,HR Manager,Employee Supervisor, Department Manager")]
         [HttpGet("view-employee")]
         public ActionResult<IQueryable<Employee>> GetAllEmployeeByAdmin()
         {
@@ -52,7 +52,7 @@ namespace MiniProject6.WebAPI.Controllers
             return Ok(employee);
         }
         // get employee by id for role except for employee
-        [Authorize(Roles = "Administrator,HR Manager")]
+        //[Authorize(Roles = "Administrator,HR Manager")]
         [HttpGet("{empNo}")]
         public async Task<ActionResult<Employee>> GetEmployeeById(int empNo)
         {
@@ -64,7 +64,7 @@ namespace MiniProject6.WebAPI.Controllers
             return Ok(employee);
         }
         // get employee for role except for employee
-        [Authorize(Roles = "Administrator, HR Manager, Department Manager, Employee Supervisor")]
+        //[Authorize(Roles = "Administrator, HR Manager, Department Manager, Employee Supervisor")]
         [HttpGet("get-all-employee-details")]
         public async Task<ActionResult<List<EmployeeDto>>> GetAllEmployeesAsync()
         {
@@ -73,8 +73,8 @@ namespace MiniProject6.WebAPI.Controllers
                 var result = await _employeeService.GetAllEmployeesAsync();
                 return Ok(result);
             }
-            catch (UnauthorizedAccessException ex) 
-            { 
+            catch (UnauthorizedAccessException ex)
+            {
                 return BadRequest(ex.Message);
             }
             catch (Exception ex)
@@ -82,7 +82,7 @@ namespace MiniProject6.WebAPI.Controllers
                 return StatusCode(500, new { message = ex.Message });
             }
         }
-        [Authorize(Roles = "Employee")]
+        //[Authorize(Roles = "Employee")]
         [HttpGet("get-employee-details")]
         public async Task<ActionResult<EmployeeDetailMaster>> GetAllEmployeesAsync(int empno)
         {
@@ -144,7 +144,7 @@ namespace MiniProject6.WebAPI.Controllers
         }
 
         //Add Employee and User only for several role
-        [Authorize(Roles = "Administrator, HR Manager")]
+        //[Authorize(Roles = "Administrator, HR Manager")]
         [HttpPost("Add-employee-user")]
         public async Task<IActionResult> RegisterEmployee(RegisterEmployee registerEmployee)
         {
@@ -173,6 +173,123 @@ namespace MiniProject6.WebAPI.Controllers
         {
             var result = await _employeeService.GetEmployeesUnderSupervisorAsync(spvEmpNo);
             return Ok(result);
+        }
+
+        [HttpPut("deactivate/{empNo}")]
+        public async Task<IActionResult> DeactivateEmployee(int empNo, [FromBody] DeactivateEmployeeDto deactivateDto)
+        {
+            if (string.IsNullOrWhiteSpace(deactivateDto.Reason))
+            {
+                return BadRequest("Deactivation reason is required.");
+            }
+
+            try
+            {
+                await _employeeService.DeactivateEmployeeAsync(empNo, deactivateDto.Reason);
+                return Ok(new { Message = $"Employee {empNo} deactivated successfully." });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Error = ex.Message });
+            }
+        }
+
+        [HttpPut("update-employee-timestamp/{empNo}")]
+        public async Task<IActionResult> UpdateEmployeeAsync(int empNo, UpdateDto updateDto)
+        {
+            await _employeeService.UpdateEmployeeAsync(empNo, updateDto).ConfigureAwait(false);
+            return Ok(new { Message = "Employee updated successfully" });
+        }
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchEmployee([FromQuery] SearchDto searchDto)
+        {
+            var res = await _employeeService.GetFilteredSortedEmployeesAsync(searchDto);
+            return Ok(res);
+        }
+        [HttpPost("employees/{empNo}/dependents")]
+        public async Task<IActionResult> AddDependent(int empNo, [FromBody] DependentDto dependentDto)
+        {
+            try
+            {
+                await _employeeService.AddDependentAsync(empNo, dependentDto);
+                return Ok(new { message = "Dependent added successfully." });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpPost("dependents")]
+        public async Task<IActionResult> AddDependent([FromBody] DependentDto dependentDto)
+        {
+            try
+            {
+                await _employeeService.AddDependentLoginAsync(dependentDto);
+                return Ok(new { message = "Dependent added successfully." });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { error = "An unexpected error occurred.", details = ex.Message });
+            }
+        }
+
+        [HttpGet("dependent/${empNo}")]
+        public async Task<IActionResult> GetEmployeeDependent(int empNo)
+        {
+            var res = await _employeeRepository.GetEmployeeById(empNo);
+            return Ok(res);
+        }
+
+        [Authorize]
+        [HttpGet("same-department")]
+        public async Task<IActionResult> GetEmployeesInSameDepartment()
+        {
+            try
+            {
+                var employees = await _employeeService.GetEmployeesInSameDepartmentAsync();
+                return Ok(employees);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpGet("details-employee")]
+        public async Task<IActionResult> GetEmployeeDetails()
+        {
+            try
+            {
+                var employees = await _employeeService.GetEmployeeDetails();
+                return Ok(employees);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
     }
 }

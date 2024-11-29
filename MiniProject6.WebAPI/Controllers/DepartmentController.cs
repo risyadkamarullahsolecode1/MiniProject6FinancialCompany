@@ -19,14 +19,14 @@ namespace MiniProject6.WebAPI.Controllers
             _departmentRepository = departmentRepository;
             _departmentService = departmentService;
         }
-        [Authorize(Roles = "Administrator, HR Department, Department Manager")]
+        [Authorize(Roles = "Administrator, HR Manager, Department Manager")]
         [HttpGet]
         public ActionResult<IQueryable<Department>> GetAllDepartment()
         {
             var department = _departmentRepository.GetAllDepartment();
             return Ok(department);
         }
-        [Authorize(Roles = "Administrator, HR Department, Department Manager")]
+        [Authorize(Roles = "Administrator, HR Manager, Department Manager")]
         [HttpGet("{deptNo}")]
         public async Task<ActionResult<Department>> GetEmployeeById(int deptNo)
         {
@@ -104,6 +104,19 @@ namespace MiniProject6.WebAPI.Controllers
         {
             var result = await _departmentService.GetEmployeesUnderSupervisorAsync(spvEmpNo);
             return Ok(result);
+        }
+        [Authorize(Roles = "Administrator, HR Manager, Department Manager")]
+        [HttpGet("{deptNo}/employees")]
+        public async Task<IActionResult> GetEmployee(int deptNo)
+        {
+            var res = await _departmentRepository.GetEmployee(deptNo);
+            return Ok(res);
+        }
+        [HttpGet("department")]
+        public async Task<IActionResult> GetDepartmentProject()
+        {
+            var res = await _departmentService.GetProjectsForDepartmentAsync();
+            return Ok(res);
         }
     }
 }

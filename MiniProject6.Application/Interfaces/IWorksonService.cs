@@ -11,5 +11,6 @@ namespace MiniProject6.Application.Interfaces
     {
         Task<Workson> AssignEmployeeWorkson(int empno,Workson workson);
         Task<Workson> UpdateEmployeeWorkson(int empno, Workson workson);
+        Task AddProjectAssignmentsAsync(Workson workson);
     }
 }

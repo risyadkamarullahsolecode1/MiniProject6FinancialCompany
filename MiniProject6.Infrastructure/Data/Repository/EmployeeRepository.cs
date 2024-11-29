@@ -1,4 +1,5 @@
-﻿using MiniProject6.Application.Dtos;
+﻿using Microsoft.EntityFrameworkCore;
+using MiniProject6.Application.Dtos;
 using MiniProject6.Domain.Entities;
 using MiniProject6.Domain.Interfaces;
 using System;
@@ -62,6 +63,23 @@ namespace MiniProject6.Infrastructure.Data.Repository
         public async Task SaveChangesAsync()
         {
             await _context.SaveChangesAsync().ConfigureAwait(false);
+        }
+
+        // Get employee by UserId
+        public async Task<Employee?> GetEmployeeByUserIdAsync(string userId)
+        {
+            return await _context.Employees.FirstOrDefaultAsync(e => e.UserId == userId);
+        }
+
+        // Get all employees in a specific department
+        public async Task<List<Employee>> GetAllEmployeesInDepartmentAsync(int deptNo)
+        {
+            return await _context.Employees.Where(e => e.Deptno == deptNo).ToListAsync();
+        }
+
+        public async Task<Employee> GetEmployeeByUserId(string userId)
+        {
+            return await _context.Employees.FirstOrDefaultAsync(e => e.UserId == userId);
         }
     }
 }

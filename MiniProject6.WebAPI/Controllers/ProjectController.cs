@@ -15,7 +15,7 @@ namespace MiniProject6.WebAPI.Controllers
         {
             _projectRepository = projectRepository;
         }
-        [Authorize(Roles = "Administrator, Department Manager, HR Manager, Employee")]
+        [Authorize(Roles = "Administrator, Employee Supervisor, Department Manager, HR Manager, Employee")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Project>>> GetAllProject()
         {

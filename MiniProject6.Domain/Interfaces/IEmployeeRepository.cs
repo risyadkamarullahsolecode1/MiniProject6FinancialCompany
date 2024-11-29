@@ -16,5 +16,8 @@ namespace MiniProject6.Domain.Interfaces
         Task<Employee> UpdateEmployeeAsync(Employee employee);
         Task<bool> DeleteEmployee(int empNo);
         Task SaveChangesAsync();
+        Task<Employee?> GetEmployeeByUserIdAsync(string userId);
+        Task<List<Employee>> GetAllEmployeesInDepartmentAsync(int deptNo);
+        Task<Employee> GetEmployeeByUserId(string userId);
     }
 }

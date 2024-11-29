@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace MiniProject6.Infrastructure.Migrations
 {
     [DbContext(typeof(CompanyContext))]
-    [Migration("20240830075530_AddUserIdToEmployee")]
-    partial class AddUserIdToEmployee
+    [Migration("20241126031957_addtabletodb")]
+    partial class addtabletodb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -242,9 +242,11 @@ namespace MiniProject6.Infrastructure.Migrations
                         .HasColumnType("character varying(100)")
                         .HasColumnName("deptname");
 
-                    b.Property<string>("Location")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
+                    b.Property<int?>("Location")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("integer")
                         .HasColumnName("location");
 
                     b.Property<int?>("Mgrempno")
@@ -407,13 +409,19 @@ namespace MiniProject6.Infrastructure.Migrations
 
             modelBuilder.Entity("MiniProject6.Domain.Entities.Location", b =>
                 {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
                     b.Property<string>("Locations")
+                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("character varying(100)")
                         .HasColumnName("location");
 
-                    b.HasKey("Locations")
-                        .HasName("location_pkey");
+                    b.HasKey("Id");
 
                     b.ToTable("Locations");
                 });
@@ -431,10 +439,8 @@ namespace MiniProject6.Infrastructure.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("deptno");
 
-                    b.Property<string>("Projectlocation")
-                        .HasMaxLength(100)
-                        .HasColumnType("character varying(100)")
-                        .HasColumnName("projectlocation");
+                    b.Property<int?>("LocationId")
+                        .HasColumnType("integer");
 
                     b.Property<string>("Projname")
                         .IsRequired()
@@ -446,6 +452,8 @@ namespace MiniProject6.Infrastructure.Migrations
                         .HasName("projects_pkey");
 
                     b.HasIndex("Deptno");
+
+                    b.HasIndex("LocationId");
 
                     b.ToTable("Projects");
                 });
@@ -531,8 +539,7 @@ namespace MiniProject6.Infrastructure.Migrations
                 {
                     b.HasOne("MiniProject6.Domain.Entities.Location", "LocationNavigation")
                         .WithMany("Departments")
-                        .HasForeignKey("Location")
-                        .HasConstraintName("fk_location");
+                        .HasForeignKey("Location");
 
                     b.HasOne("MiniProject6.Domain.Entities.Employee", "MgrempnoNavigation")
                         .WithMany("DepartmentMgrempnoNavigations")
@@ -587,7 +594,13 @@ namespace MiniProject6.Infrastructure.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("projects_deptno_fkey");
 
+                    b.HasOne("MiniProject6.Domain.Entities.Location", "LocationNavigation")
+                        .WithMany("Projects")
+                        .HasForeignKey("LocationId");
+
                     b.Navigation("DeptnoNavigation");
+
+                    b.Navigation("LocationNavigation");
                 });
 
             modelBuilder.Entity("MiniProject6.Domain.Entities.Workson", b =>
@@ -637,6 +650,8 @@ namespace MiniProject6.Infrastructure.Migrations
             modelBuilder.Entity("MiniProject6.Domain.Entities.Location", b =>
                 {
                     b.Navigation("Departments");
+
+                    b.Navigation("Projects");
                 });
 
             modelBuilder.Entity("MiniProject6.Domain.Entities.Project", b =>

@@ -52,7 +52,7 @@ namespace MiniProject6.Domain.Entities
         [Column("level")]
         public int? Level { get; set; }
 
-        [Column("lastupdateddate", TypeName = "timestamp without time zone")]
+        [Column("lastupdateddate", TypeName = "timestamp with time zone")]
         public DateTime? Lastupdateddate { get; set; }
 
         [Column("nik")]
@@ -70,7 +70,7 @@ namespace MiniProject6.Domain.Entities
         public string? UserId { get; set; }
 
         [ForeignKey("UserId")]
-        public virtual AppUser AppUser { get; set; }
+        public virtual AppUser? AppUser { get; set; }
 
         [InverseProperty("MgrempnoNavigation")]
         public virtual ICollection<Department> DepartmentMgrempnoNavigations { get; set; } = new List<Department>();
